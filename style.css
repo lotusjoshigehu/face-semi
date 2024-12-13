@@ -1,0 +1,187 @@
+/* General Styles */
+body {
+    font-family: 'Cambria', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #7b99e8;
+    display: flex;
+    height: 100vh;
+}
+
+/* Home Content Section */
+#homeContent {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #000e0e;
+    font-size: 1.5em;
+    margin-top: 20px; /* Adjust the space from the top */
+}
+
+/* Navigation Bar Styles */
+#navbar {
+    width: 250px;
+    background-color: #2c3e50;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: -250px; /* Initially hidden */
+    transition: left 0.3s ease; /* Smooth transition for sliding */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+#navToggle {
+    position: absolute;
+    top: 20px;
+    right: -40px;
+    background-color: #34495e;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#arrow {
+    font-size: 1.5em;
+    color: white;
+    line-height: 40px;
+}
+
+#navLinks {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 60px;
+}
+
+#navLinks li {
+    margin: 20px 0;
+}
+
+#navLinks li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    display: block;
+}
+
+#navLinks li a:hover {
+    background-color: #34495e;
+}
+
+/* Main Content Section */
+#mainContent {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 0;
+    padding: 20px;
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+#videoContainer {
+    display: block;
+    width: 50%;
+    text-align: center;
+    padding: 0;
+    margin-left: 0;
+}
+
+#video {
+    width: 100%;
+    max-width: 640px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#startBtn {
+    padding: 15px 30px;
+    background-color: #e82807;
+    color: #f8f6f6;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+#startBtn:hover {
+    background-color: #c54141;
+}
+
+/* Student Details Section */
+#attendanceDetails {
+    width: 40%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.studentCard {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.studentPhoto {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+#countItem {
+    margin-top: 20px;
+}
+
+#Count {
+    font-weight: bold;
+    color: #09f1d7; /* Or any color you prefer for the count */
+}
+
+/* Student List Section */
+#studentList {
+    width: 50%;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#studentNames {
+    list-style-type: none;
+    padding: 0;
+}
+
+#studentNames li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 1.2em;
+    color: #333;
+}
+
+#studentNames li:last-child {
+    border-bottom: none;
+}
+
+
+
+
+

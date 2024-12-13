@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Attendance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* CSS to adjust the positioning and size of the unknown face image */
+        #unknownFaceContainer {
+            display: none;
+            position: relative;
+            text-align: center;
+        }
+
+        #unknownFaceImage {
+            position: absolute;
+            left: -450px; /* Move the image left without affecting the layout */
+            width: 8000%;  /* Reduce the size of the image */
+            height: auto; /* Keep the aspect ratio intact */
+            top: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar on the Left -->
+    <nav id="navbar" style="left: -250px;">
+        <div id="navToggle" onclick="toggleNav()">
+            <span id="arrow">&#8592;</span>
+        </div>
+        <ul id="navLinks">
+            <li><a href="#" onclick="showHome()">Home</a></li>
+            <li><a href="#" onclick="showAttendance()">Attendance</a></li>
+            <li id="countItem"><a href="#" onclick="showStudentList()">Count: <span id="Count">0</span></a></li> <!-- New Count Section -->
+        </ul>
+    </nav>
+
+    <!-- Main Content Section -->
+    <div id="mainContent">
+        <!-- Home Content Section -->
+        <div id="homeContent">
+            <h1>Welcome to the Face Recognition Attendance System</h1>
+            <p>Please navigate to the Attendance section to mark the attendance.</p>
+        </div>
+
+        <!-- Camera Section -->
+        <div id="videoContainer" style="display: none; margin-left: 0;">
+            <h1>Face Recognition Attendance System</h1>
+            <img src="{{ url_for('video_feed') }}" id="video" alt="Video Feed">
+            <button id="startBtn" onclick="startAttendance()">Start Attendance</button>
+        </div>
+
+        <!-- Student Details Section -->
+        <div id="attendanceDetails" style="display: none;">
+            <div id="result"></div>
+            <div id="attendanceResults"></div>
+        </div>
+
+        <!-- Unknown Face Section -->
+        <div id="unknownFaceContainer" style="display: none;">
+            <img src="{{ url_for('static', filename='picture10/unknown.jpg') }}" alt="Unknown Face" id="unknownFaceImage">
+            <p>.</p>
+        </div>
+
+        <!-- Student List Section (For Count Section) -->
+        <div id="studentList" style="display: none;">
+            <h3>Students Present:</h3>
+            <ul id="studentNames"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Function to display the Home content
+        function showHome() {
+            document.getElementById('homeContent').style.display = 'block';
+            document.getElementById('videoContainer').style.display = 'none';
+            document.getElementById('attendanceDetails').style.display = 'none';
+            document.getElementById('studentList').style.display = 'none';
+        }
+
+        // Function to display the Attendance content
+        function showAttendance() {
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('videoContainer').style.display = 'block';
+            document.getElementById('attendanceDetails').style.display = 'block';
+            document.getElementById('studentList').style.display = 'none';
+        }
+
+        // Function to start the attendance process
+        function startAttendance() {
+            fetch('/start_attendance', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if unknown face was detected
+                if (data.unknown_face) {
+                    // Display the unknown face container
+                    document.getElementById('unknownFaceContainer').style.display = 'block';
+                    document.getElementById('attendanceResults').innerHTML = `<h3>${data.unknown_face}</h3>`;
+                } else if (data.last_student) {
+                    const student = data.last_student;
+
+                    // Update the student count
+                    document.getElementById('Count').innerText = data.count;
+
+                    // Display the last student's details
+                    document.getElementById('attendanceResults').innerHTML = `
+                        <h3>Last Attendance Marked:</h3>
+                        <div class="studentCard">
+                            <img src="${student.photo_url}" alt="${student.name}'s Picture" class="studentPhoto">
+                            <p><strong>Name:</strong> ${student.name}</p>
+                            <p><strong>Major:</strong> ${student.major}</p>
+                            <p><strong>Year:</strong> ${student.year}</p>
+                            <p><strong>Total Attendance:</strong> ${student['total attendance']}</p>
+                        </div>
+                    `;
+                    // Hide the unknown face container if a recognized face is detected
+                    document.getElementById('unknownFaceContainer').style.display = 'none';
+                } else {
+                    document.getElementById('result').innerText = "Error: " + data.error;
+                    // Hide the unknown face container in case of an error
+                    document.getElementById('unknownFaceContainer').style.display = 'none';
+                }
+            });
+        }
+
+        // Function to show the list of students present when clicking on the count
+        function showStudentList() {
+            // Fetch the list of students whose attendance is marked
+            fetch('/get_student_list', { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    // Check if attendance data is available
+                    if (data.attendance && data.attendance.length > 0) {
+                        const studentNames = data.attendance.map(student => `<li>${student}</li>`).join('');
+                        document.getElementById('studentNames').innerHTML = studentNames;
+                    } else {
+                        document.getElementById('studentNames').innerHTML = '<li>No attendance marked yet.</li>';
+                    }
+                });
+
+            // Show the student list and hide other sections
+            document.getElementById('homeContent').style.display = 'none';
+            document.getElementById('videoContainer').style.display = 'none';
+            document.getElementById('attendanceDetails').style.display = 'none';
+            document.getElementById('studentList').style.display = 'block';
+        }
+
+        // Function to toggle the navigation bar
+        function toggleNav() {
+            const nav = document.getElementById('navbar');
+            const arrow = document.getElementById('arrow');
+            const videoContainer = document.getElementById('videoContainer');
+
+            // Check if the nav is expanded or collapsed
+            if (nav.style.left === '-250px') {
+                nav.style.left = '0'; // Show nav
+                arrow.innerHTML = '&#8592;'; // Change arrow direction
+                videoContainer.style.marginLeft = '250px';
+               unknownFaceImage.style.transform = 'translateX(50px)';
+                // Move video slightly right
+            } else {
+                nav.style.left = '-250px'; // Hide nav
+                arrow.innerHTML = '&#8594;'; // Change arrow direction
+                videoContainer.style.marginLeft = '0';
+                unknownFaceImage.style.transform = 'translateX(0)';
+                 // Reset video position
+            }
+        }
+    </script>
+</body>
+</html>
